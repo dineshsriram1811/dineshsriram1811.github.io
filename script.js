@@ -12,38 +12,37 @@ window.addEventListener('load', () => {
   }
 });
 
-/* ── 2. Mobile Sidebar & Hamburger Toggle ───────────────────── */
+/* ── 2. Top Navbar & Mobile Menu Toggle ─────────────────────── */
 const hamburger = document.getElementById('hamburger');
-const sidebar = document.getElementById('sidebar');
-const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+const topNavbar = document.getElementById('navbar');
+const navBackdrop = document.getElementById('nav-backdrop');
 
-function closeMobileSidebar() {
+function closeMobileMenu() {
   if (hamburger) {
     hamburger.classList.remove('open');
     hamburger.setAttribute('aria-expanded', 'false');
   }
-  if (sidebar) {
-    sidebar.classList.remove('open');
+  if (topNavbar) {
+    topNavbar.classList.remove('menu-open');
   }
-  if (sidebarBackdrop) {
-    sidebarBackdrop.classList.remove('active');
+  if (navBackdrop) {
+    navBackdrop.classList.remove('active');
   }
   document.body.style.overflow = '';
 }
 
-function openMobileSidebar() {
+function openMobileMenu() {
   if (hamburger) {
     hamburger.classList.add('open');
     hamburger.setAttribute('aria-expanded', 'true');
   }
-  if (sidebar) {
-    sidebar.classList.add('open');
+  if (topNavbar) {
+    topNavbar.classList.add('menu-open');
   }
-  if (sidebarBackdrop) {
-    sidebarBackdrop.classList.add('active');
+  if (navBackdrop) {
+    navBackdrop.classList.add('active');
   }
-  // Prevent background scroll while mobile drawer is open
-  if (window.innerWidth <= 1024) {
+  if (window.innerWidth <= 860) {
     document.body.style.overflow = 'hidden';
   }
 }
@@ -52,46 +51,44 @@ if (hamburger) {
   hamburger.addEventListener('click', () => {
     const isOpen = hamburger.classList.contains('open');
     if (isOpen) {
-      closeMobileSidebar();
+      closeMobileMenu();
     } else {
-      openMobileSidebar();
+      openMobileMenu();
     }
   });
 }
 
-if (sidebarBackdrop) {
-  sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+if (navBackdrop) {
+  navBackdrop.addEventListener('click', closeMobileMenu);
 }
 
-// Close mobile sidebar whenever a navigation link is clicked
-document.querySelectorAll('.sidebar .nav-link, .sidebar-cta-btn').forEach(link => {
+// Close mobile menu whenever any navigation link or mobile button is clicked
+document.querySelectorAll('.navbar-nav .nav-link, .mobile-nav .nav-link, .mobile-menu .btn').forEach(link => {
   link.addEventListener('click', () => {
-    if (window.innerWidth <= 1024) {
-      closeMobileSidebar();
-    }
+    closeMobileMenu();
   });
 });
 
-// Close mobile drawer on ESC key
+// Close mobile menu on ESC key
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
-    closeMobileSidebar();
+  if (e.key === 'Escape' && topNavbar && topNavbar.classList.contains('menu-open')) {
+    closeMobileMenu();
   }
 });
 
 // Reset body overflow if resized to desktop
 window.addEventListener('resize', () => {
-  if (window.innerWidth > 1024) {
-    closeMobileSidebar();
+  if (window.innerWidth > 860) {
+    closeMobileMenu();
   }
 }, { passive: true });
 
-/* ── 3. Active Nav Link on Scroll (Scroll Spy) ──────────────── */
+/* ── 3. Active Nav Link on Scroll (Scroll Spy) & Navbar Scrolled State ── */
 const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
+const navLinks = document.querySelectorAll('.navbar-nav .nav-link, .mobile-nav .nav-link');
 
 function updateActiveNav() {
-  const scrollPosition = window.scrollY + 120;
+  const scrollPosition = window.scrollY + 110;
   let currentSectionId = '';
 
   sections.forEach(section => {
@@ -116,6 +113,15 @@ function updateActiveNav() {
       link.classList.remove('active');
     }
   });
+
+  // Toggle subtle navbar elevation shadow on scroll
+  if (topNavbar) {
+    if (window.scrollY > 20) {
+      topNavbar.classList.add('scrolled');
+    } else {
+      topNavbar.classList.remove('scrolled');
+    }
+  }
 }
 
 window.addEventListener('scroll', updateActiveNav, { passive: true });
